@@ -1,0 +1,35 @@
+.blogDetail {
+  padding: 1rem;
+}
+
+.blogDetail__titles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.blogDetail__mainTitle {
+  align-items: center !important;
+}
+
+.blogDetail__userDetail {
+  display: flex;
+  margin: 1rem 0;
+}
+
+.blogDetail .blogDetail__userImg {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.blogDetail__interactions {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+}
+
+.blogDetail__markup {
+  padding: 1rem 0 !important;
+}

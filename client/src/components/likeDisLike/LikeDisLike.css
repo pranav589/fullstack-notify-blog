@@ -1,0 +1,12 @@
+.blog-likes {
+  display: flex;
+  /* justify-content: space-between !important; */
+  align-items: center;
+}
+
+.likes,
+.disLikes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

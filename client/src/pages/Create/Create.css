@@ -1,0 +1,13 @@
+.create {
+  padding: 10px;
+  margin-top: 5px;
+  border-top: 1px solid lightgrey;
+}
+
+.create__editor {
+  margin-bottom: 1rem;
+}
+
+.create__textFields {
+  display: block;
+}
