@@ -7,7 +7,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LikeDisLike from "../../components/likeDisLike/LikeDisLike";
 import { AuthContext } from "../../context/authContext";
 import { toast } from "react-toastify";
-import Save from "../../components/save/Save";
+
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 
 function SavePage() {
   const { user } = useContext(AuthContext);
@@ -44,8 +45,24 @@ function SavePage() {
     }
   };
 
+  const removeSave = (blogId, userFrom) => {
+    axios
+      .post("/api/save/removeFromSave", {
+        blogId: blogId,
+        userFrom: userFrom,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          console.log(res.data);
+          fetchBlogs();
+          toast.success("Removed from save!");
+        } else {
+          toast.error("Failed to remove!");
+        }
+      });
+  };
+
   const renderBlog = blogs.map((blog) => {
-    console.log(blog);
     return (
       <div className="blog" key={blog._id}>
         <Link to={`/blog/${blog?.blogId}`} className="blog__titles">
@@ -58,12 +75,21 @@ function SavePage() {
             to={`/user/${blog?.blogWriter?._id}`}
             className="home__userDetail"
           >
-            <img src={blog?.blogWriter?.image} alt={blog.blogWriter.name} />
+            <img src={blog?.blogWriter?.image} alt={blog?.blogWriter?.name} />
             <p>{blog?.blogWriter?.name}</p>
           </Link>
           <div className="home__actions">
             <LikeDisLike blog={blog} />
-            <Save blog={blog} />
+
+            <div
+              className="save"
+              onClick={() => removeSave(blog?.blogId, blog?.userFrom?._id)}
+            >
+              <IconButton>
+                <BookmarkAddedIcon fontSize="large" color="primary" />
+              </IconButton>
+              <span>Remove</span>
+            </div>
             {userId === blog?.userFrom?._id && (
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <IconButton onClick={() => deleteBlog(blog._id)}>

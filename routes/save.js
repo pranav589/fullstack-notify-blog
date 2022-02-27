@@ -46,7 +46,7 @@ router.post("/removeFromSave", (req, res) => {
     userFrom: req.body.userFrom,
   }).exec((err, doc) => {
     if (err) return res.status(400).json({ success: false, err });
-    res.status(200).json({ success: true, doc });
+    return res.status(200).json({ success: true, doc });
   });
 });
 
