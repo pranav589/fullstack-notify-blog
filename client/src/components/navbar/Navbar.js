@@ -59,6 +59,26 @@ function NavBar() {
     });
   };
 
+  const handleGuestLogin = async () => {
+    try {
+      const res = await axios.post("/api/user/login", {
+        email: "guest@gmail.com",
+        password: "password",
+      });
+
+      if (res.data.loginSuccess) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userId", res.data.userId);
+        setUser(true);
+
+        toast.success("Welcome Guest!");
+        navigate("/");
+      }
+    } catch (err) {
+      toast.error(err.response.data.message);
+    }
+  };
+
   return (
     <div style={{ flexGrow: 1 }}>
       <AppBar position="static" className="nav">
@@ -78,6 +98,11 @@ function NavBar() {
           </Typography>
 
           <div className="header__icons">
+            {!user && (
+              <MenuItem onClick={handleGuestLogin}>
+                <Typography>Guest Login</Typography>
+              </MenuItem>
+            )}
             {user && (
               <IconButton onClick={() => navigate("/saved")}>
                 <BookmarkAdded />
