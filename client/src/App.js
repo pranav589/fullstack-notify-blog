@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 
 import "./App.css";
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext } from "./context/authContext";
 import PrivateRoute from "./PrivateRoute";
 import NavBar from "./components/navbar/Navbar";
@@ -64,10 +64,11 @@ export default function App() {
               </PrivateRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
+
         <ToastContainer />
       </BrowserRouter>
-      {/* {isLogin ? <Notes setIsLogin={setIsLogin}/> : <Login setIsLogin={setIsLogin}/>} */}
     </div>
   );
 }
