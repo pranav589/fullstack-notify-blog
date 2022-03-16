@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { IconButton } from "@mui/material";
 
 function Save(blog) {
-  const { user, userData } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const userFrom = localStorage.getItem("userId");
 
   const [saveNumber, setSaveNumber] = useState(0);
