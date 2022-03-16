@@ -9,21 +9,26 @@ import { AuthContext } from "../../context/authContext";
 import { toast } from "react-toastify";
 
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import Loader from "../../components/loader/Loader";
 
 function SavePage() {
   const { user } = useContext(AuthContext);
   const [blogs, setBlogs] = useState([]);
   const userId = localStorage.getItem("userId");
+  const [isLoading, setIsLoading] = useState(false);
   let variable = {
     userFrom: localStorage.getItem("userId"),
   };
 
   const fetchBlogs = async () => {
+    setIsLoading(true);
     axios.post("/api/save/getSavedBlog", variable).then((response) => {
       if (response.data.success) {
         setBlogs(response.data.saves);
+        setIsLoading(false);
       } else {
         toast.error("Couldnt get blog`s lists");
+        setIsLoading(false);
       }
     });
   };
@@ -31,19 +36,6 @@ function SavePage() {
   useEffect(() => {
     fetchBlogs();
   }, []);
-
-  const deleteBlog = (blogId) => {
-    if (user) {
-      axios.post("/api/blog/deleteBlog", { blogId: blogId }).then((res) => {
-        if (res.data.success) {
-          fetchBlogs();
-          toast.success("Blog is deleted!");
-        } else {
-          toast.error("Failed to delete!");
-        }
-      });
-    }
-  };
 
   const removeSave = (blogId, userFrom) => {
     axios
@@ -90,19 +82,37 @@ function SavePage() {
               </IconButton>
               <span>Remove</span>
             </div>
-            {userId === blog?.userFrom?._id && (
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <IconButton onClick={() => deleteBlog(blog._id)}>
-                  <DeleteIcon fontSize="large" color="primary" />
-                </IconButton>
-                <span>Delete</span>
-              </div>
-            )}
           </div>
         </div>
       </div>
     );
   });
+
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
+
+  if (blogs.length === 0) {
+    return (
+      <Typography
+        variant="h6"
+        mb={2}
+        mt={2}
+        style={{ color: "#191919", textAlign: "center" }}
+      >
+        No Saved Blogs!
+      </Typography>
+    );
+  }
 
   return (
     <>

@@ -9,19 +9,24 @@ import { AuthContext } from "../../context/authContext";
 import { toast } from "react-toastify";
 import Save from "../../components/save/Save";
 import EditIcon from "@mui/icons-material/Edit";
+import Loader from "../../components/loader/Loader";
 
 function MyBlogs() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [blogs, setBlogs] = useState([]);
   const userId = localStorage.getItem("userId");
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchBlogs = async () => {
+    setIsLoading(true);
     axios.get("/api/blog/getBlogs").then((response) => {
       if (response.data.success) {
         setBlogs(response.data.blogs);
+        setIsLoading(false);
       } else {
         toast.error("Couldnt get blog`s lists");
+        setIsLoading(false);
       }
     });
   };
@@ -31,13 +36,16 @@ function MyBlogs() {
   }, []);
 
   const deleteBlog = (blogId) => {
+    setIsLoading(true);
     if (user) {
       axios.post("/api/blog/deleteBlog", { blogId: blogId }).then((res) => {
         if (res.data.success) {
           fetchBlogs();
           toast.success("Blog is deleted!");
+          setIsLoading(false);
         } else {
           toast.error("Failed to delete!");
+          setIsLoading(false);
         }
       });
     }
@@ -95,20 +103,44 @@ function MyBlogs() {
     }
   });
 
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
+  if (blogs?.length === 0) {
+    return (
+      <Typography
+        variant="h5"
+        mb={2}
+        mt={2}
+        style={{ color: "#191919", textAlign: "center" }}
+      >
+        No Blogs Yet. May be create one?
+      </Typography>
+    );
+  }
+
   return (
     <>
+      <Typography
+        variant="h5"
+        mb={2}
+        mt={2}
+        style={{ color: "#191919", textAlign: "center" }}
+      >
+        Your Blogs
+      </Typography>
+
       {user ? (
-        <>
-          <Typography
-            variant="h5"
-            mb={2}
-            mt={2}
-            style={{ color: "#191919", textAlign: "center" }}
-          >
-            Your Blogs
-          </Typography>
-          <div className="home">{renderBlog}</div>
-        </>
+        <div className="home">{renderBlog}</div>
       ) : (
         <div style={{ textAlign: "center" }}>
           <Typography variant="h6" mb={2} mt={2} style={{ color: "#191919" }}>

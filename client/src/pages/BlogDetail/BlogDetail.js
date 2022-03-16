@@ -10,6 +10,7 @@ import Comments from "../../components/comment/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { AuthContext } from "../../context/authContext";
 import Save from "../../components/save/Save";
+import Loader from "../../components/loader/Loader";
 
 function BlogDetail() {
   const { user } = useContext(AuthContext);
@@ -18,17 +19,21 @@ function BlogDetail() {
   const [commentLists, setCommentLists] = useState([]);
   const params = useParams();
   const userId = localStorage.getItem("userId");
+  const [isLoading, setIsLoading] = useState(false);
 
   const variable = {
     blogId: params.id,
   };
 
   useEffect(() => {
+    setIsLoading(true);
     axios.post("/api/blog/getBlog", variable).then((response) => {
       if (response.data.success) {
         setBlog(response.data.blog);
+        setIsLoading(false);
       } else {
         toast.error("Couldn't get blog");
+        setIsLoading(false);
       }
     });
   }, []);
@@ -59,6 +64,19 @@ function BlogDetail() {
       });
     }
   };
+
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
 
   if (blog.writer) {
     return (
@@ -111,7 +129,7 @@ function BlogDetail() {
 
   return (
     <div>
-      <h1>Blog Detail</h1>
+      <h6>Loading....</h6>
     </div>
   );
 }

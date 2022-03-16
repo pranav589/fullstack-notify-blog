@@ -1,5 +1,11 @@
 .blogDetail {
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .blogDetail__titles {

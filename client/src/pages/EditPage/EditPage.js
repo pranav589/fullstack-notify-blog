@@ -6,6 +6,7 @@ import { AuthContext } from "../../context/authContext";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../../components/loader/Loader";
 
 function EditPage() {
   const [title, setTitle] = useState("");
@@ -14,6 +15,7 @@ function EditPage() {
   const params = useParams();
   const [content, setContent] = useState("");
   const { user, userData } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [open, setOpen] = useState(false);
 
@@ -40,7 +42,7 @@ function EditPage() {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    console.log("clikc");
+    setIsLoading(true);
     if (!user) {
       return toast.error("Login");
     }
@@ -56,10 +58,24 @@ function EditPage() {
       if (response) {
         toast.success("Post Updated!");
         richMessage = "";
+        setIsLoading(false);
         navigate("/myBlogs");
       }
     });
   };
+
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
 
   return (
     <div className="create">

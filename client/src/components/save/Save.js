@@ -69,7 +69,6 @@ function Save(blog) {
         .then((response) => {
           if (response.data.success) {
             setSaved(response.data.saved);
-            console.log(saved);
           } else {
             toast.error("Failed to get Saved Information");
           }

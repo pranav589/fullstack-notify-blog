@@ -16,15 +16,18 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 import { AuthContext } from "../../context/authContext";
+import Loader from "../../components/loader/Loader";
 
 export default function Login() {
   const { user, setUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const res = await axios.post("/api/user/login", {
         email,
@@ -35,14 +38,28 @@ export default function Login() {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("userId", res.data.userId);
         setUser(true);
-
+        setIsLoading(false);
         toast.success("Welcome!");
         navigate("/");
       }
     } catch (err) {
       toast.error(err.response.data.message);
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
 
   return (
     <>

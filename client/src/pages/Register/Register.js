@@ -16,6 +16,7 @@ import "./Register.css";
 
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../../components/loader/Loader";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -23,9 +24,11 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (password !== confirmPassword) {
       return toast.error("Password and confirm password field does not match.");
     } else {
@@ -39,13 +42,28 @@ export default function Register() {
 
         if (res.data.success) {
           toast.success("Account Registered! Login Now!");
+          setIsLoading(false);
           navigate("/login");
         }
       } catch (err) {
         toast.error(err.response.data.message);
+        setIsLoading(false);
       }
     }
   };
+
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
 
   return (
     <>

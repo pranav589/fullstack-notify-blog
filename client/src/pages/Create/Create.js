@@ -6,24 +6,24 @@ import { AuthContext } from "../../context/authContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../../components/loader/Loader";
 
 function Create() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const navigate = useNavigate();
   const { user, userData } = useContext(AuthContext);
-  console.log(user);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   var richMessage = "";
   const handleEditorChange = (e) => {
     richMessage = e.target.getContent();
-    console.log("Rich Message was updated:", richMessage);
   };
 
   const handlePublish = (e) => {
     e.preventDefault();
-    console.log("clikc");
+    setIsLoading(true);
     if (!user) {
       return alert("Login");
     }
@@ -38,10 +38,24 @@ function Create() {
       if (response) {
         toast.success("Post Created!");
         richMessage = "";
+        setIsLoading(false);
         navigate("/");
       }
     });
   };
+
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
 
   return (
     <div className="create">

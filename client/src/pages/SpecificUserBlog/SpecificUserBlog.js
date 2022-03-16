@@ -8,18 +8,23 @@ import LikeDisLike from "../../components/likeDisLike/LikeDisLike";
 import { AuthContext } from "../../context/authContext";
 import { toast } from "react-toastify";
 import Save from "../../components/save/Save";
+import Loader from "../../components/loader/Loader";
 
 function SpecificUserBlog() {
   const { user } = useContext(AuthContext);
   const [blogs, setBlogs] = useState([]);
   const userId = localStorage.getItem("userId");
+  const [isLoading, setIsLoading] = useState(false);
   const params = useParams();
   const fetchBlogs = async () => {
+    setIsLoading(true);
     axios.get("/api/blog/getBlogs").then((response) => {
       if (response.data.success) {
         setBlogs(response.data.blogs);
+        setIsLoading(false);
       } else {
         toast.error("Couldnt get blog`s lists");
+        setIsLoading(false);
       }
     });
   };
@@ -70,10 +75,34 @@ function SpecificUserBlog() {
           </div>
         </div>
       );
-    } else {
-      return null;
     }
   });
+
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
+
+  if (blogs.length === 0) {
+    return (
+      <Typography
+        variant="h6"
+        mb={2}
+        mt={2}
+        style={{ color: "#191919", textAlign: "center" }}
+      >
+        User doesn't have any blogs!
+      </Typography>
+    );
+  }
 
   return <div className="home">{renderBlog}</div>;
 }

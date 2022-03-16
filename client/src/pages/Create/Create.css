@@ -2,6 +2,12 @@
   padding: 10px;
   margin-top: 5px;
   border-top: 1px solid lightgrey;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .create__editor {

@@ -8,18 +8,23 @@ import LikeDisLike from "../../components/likeDisLike/LikeDisLike";
 import { AuthContext } from "../../context/authContext";
 import { toast } from "react-toastify";
 import Save from "../../components/save/Save";
+import Loader from "../../components/loader/Loader";
 
 function Home() {
   const { user } = useContext(AuthContext);
   const [blogs, setBlogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const userId = localStorage.getItem("userId");
 
   const fetchBlogs = async () => {
+    setIsLoading(true);
     axios.get("/api/blog/getBlogs").then((response) => {
       if (response.data.success) {
         setBlogs(response.data.blogs);
+        setIsLoading(false);
       } else {
         toast.error("Couldnt get blog`s lists");
+        setIsLoading(false);
       }
     });
   };
@@ -70,6 +75,18 @@ function Home() {
       </div>
     );
   });
+  if (isLoading) {
+    return (
+      <Loader
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
 
   return <div className="home">{renderBlog}</div>;
 }
